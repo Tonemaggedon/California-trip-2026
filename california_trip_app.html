@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<!-- California Road Trip 2026 — Progressive Web App
+     For full PWA features (push notifications, offline, Add to Home Screen):
+     Host this file on any HTTPS server. Drag & drop to https://app.netlify.com/drop for an instant free URL.
+     Then open that URL on your phone and tap "Add to Home Screen".
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>California Road Trip 2026 🌅</title>
+
+<!-- PWA meta -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CA Trip 2026">
+<meta name="theme-color" content="#F4A435">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%230D1B2A'/%3E%3Ctext x='80' y='380' font-size='340'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+:root {
+  --sun:#F4A435; --sky:#2D6EA8; --ocean:#1A4E7A; --sand:#F9F1E3;
+  --coast:#E8C87A; --redwood:#7A3B2E; --sage:#5C7A60; --mist:#A8C4D4;
+  --dark:#1A1A2E; --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:100vh;}
+
+/* ── REFRESH PILL ── */
+.refresh-pill{
+  position:fixed;top:max(env(safe-area-inset-top,0px) + 12px,12px);right:12px;z-index:999;
+  background:rgba(244,164,53,.92);backdrop-filter:blur(10px);border:none;border-radius:20px;
+  padding:8px 14px;color:#1A1A00;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:transform .15s,background .15s;letter-spacing:.3px;
+}
+.refresh-pill:hover{transform:scale(1.05);}
+.refresh-pill:active{transform:scale(.96);}
+.refresh-pill.spinning .ri{animation:spin .7s linear infinite;}
+.ri{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0D1B2A 0%,#1A3A5C 40%,#2D6EA8 70%,#F4A435 100%);padding:80px 40px 60px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'%3E%3Cpath fill='%230D1B2A' d='M0,60 C360,120 1080,0 1440,60 L1440,120 L0,120 Z'/%3E%3C/svg%3E") no-repeat bottom;background-size:cover;}
+.hero-emoji{font-size:64px;display:block;margin-bottom:20px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,72px);font-weight:900;color:#fff;line-height:1.1;text-shadow:0 4px 20px rgba(0,0,0,.4);margin-bottom:16px;}
+.hero h1 span{color:var(--coast);}
+.hero p{font-size:18px;color:rgba(255,255,255,.85);max-width:600px;margin:0 auto 30px;line-height:1.7;}
+.hero-badges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+.badge{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:8px 20px;border-radius:30px;font-size:14px;font-weight:500;color:white;}
+
+/* ── NAV ── */
+.nav{background:#12243A;padding:16px 40px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav a{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;font-weight:500;padding:6px 14px;border-radius:20px;transition:all .2s;}
+.nav a:hover{background:rgba(244,164,53,.2);color:var(--coast);}
+
+/* ── NOTIFICATION BANNER ── */
+.notif-banner{background:linear-gradient(90deg,rgba(244,164,53,.12),rgba(244,164,53,.04));border:1px solid rgba(244,164,53,.3);border-radius:14px;padding:14px 18px;margin:20px 24px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.notif-banner p{font-size:13px;color:rgba(255,255,255,.8);flex:1;min-width:180px;line-height:1.5;}
+.notif-btn{background:var(--sun);color:#1A1A00;border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
+.notif-btn:hover{background:var(--coast);}
+#notif-banner{display:none;}
+
+/* ── CONTAINER ── */
+.container{max-width:1100px;margin:0 auto;padding:60px 24px;}
+.section-header{text-align:center;margin-bottom:50px;}
+.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:700;color:var(--coast);margin-bottom:12px;}
+.section-header p{color:rgba(255,255,255,.6);font-size:16px;max-width:600px;margin:0 auto;}
+.section-divider{width:60px;height:3px;background:linear-gradient(90deg,var(--sky),var(--coast));border-radius:2px;margin:16px auto 0;}
+
+/* ── ROUTE MAP ── */
+.route-map{background:linear-gradient(135deg,#12243A,#1A3A5C);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:40px;margin-bottom:60px;}
+.route-stops{display:flex;align-items:flex-start;flex-wrap:wrap;gap:0;justify-content:center;}
+.route-stop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;}
+.route-dot{width:44px;height:44px;background:var(--sky);border:3px solid var(--coast);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .4s;flex-shrink:0;}
+.route-dot.highlight{background:var(--sun);border-color:white;}
+.route-dot.booked{background:#1A6A3A;border-color:#50C880;}
+.route-dot.locked-dot{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);font-size:16px;}
+.route-stop .route-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.8);max-width:70px;min-height:28px;}
+.route-stop .route-label.hidden{visibility:hidden;}
+.route-arrow{color:var(--coast);font-size:20px;margin:0 4px;margin-top:12px;opacity:.7;}
+
+/* ── DAY CARDS ── */
+.days-grid{display:flex;flex-direction:column;gap:28px;margin-bottom:80px;}
+.day-card{background:linear-gradient(135deg,#12243A,#162E4A);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;transition:transform .2s,box-shadow .2s;position:relative;}
+.day-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.day-header{padding:24px 28px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.day-number{background:var(--sky);color:white;font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+.day-number.special{background:linear-gradient(90deg,#E8A020,#F4C355);color:#1A1A00;}
+.day-number.booked{background:linear-gradient(90deg,#1A6A3A,#2A9A5A);color:white;}
+.day-drive{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);padding:4px 12px;border-radius:20px;font-size:12px;color:var(--mist);white-space:nowrap;}
+.day-body{padding:24px 28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:700px){.day-body{grid-template-columns:1fr;}}
+
+/* ── LOCK SCREEN ── */
+.lock-screen{
+  position:absolute;inset:0;background:#0A1423;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;z-index:20;border-radius:20px;
+}
+.ls-icon{font-size:28px;opacity:0.45;line-height:1;}
+.ls-day-label{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.5px;}
+.ls-countdown{font-size:11px;color:rgba(255,255,255,.25);font-weight:500;margin-top:2px;letter-spacing:.3px;}
+.day-card.unlocked .lock-screen{display:none;}
+
+/* ── ACTIVITIES ── */
+.activities h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--coast);margin-bottom:12px;}
+.activity-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.activity-list li{display:flex;gap:10px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.5;}
+.activity-list li::before{content:'→';color:var(--sun);flex-shrink:0;margin-top:1px;}
+.activity-list li a{color:var(--mist);text-decoration:none;border-bottom:1px dotted rgba(168,196,212,.4);}
+.activity-list li a:hover{color:var(--coast);}
+
+/* ── STAY BOX ── */
+.stay-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;}
+.stay-box h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--sage);margin-bottom:10px;}
+.hotel-name{font-size:14px;font-weight:600;color:white;}
+.hotel-name a{color:var(--coast);text-decoration:none;border-bottom:1px dotted rgba(232,200,122,.4);}
+.hotel-name a:hover{color:white;}
+.hotel-tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+.tag-booked{background:rgba(26,106,58,.4);color:#50C880;}
+.tag-must{background:rgba(255,80,80,.2);color:#FF8080;}
+.hotel-desc{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px;line-height:1.5;}
+.special-note{background:linear-gradient(90deg,rgba(244,164,53,.15),rgba(244,164,53,.05));border-left:3px solid var(--sun);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:12px;font-size:13px;color:rgba(255,255,255,.8);line-height:1.5;}
+
+/* ── MAP BUTTON ── */
+.map-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(45,110,168,.25);border:1px solid rgba(45,110,168,.45);border-radius:10px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--mist);text-decoration:none;transition:all .2s;white-space:nowrap;margin-top:4px;}
+.map-btn:hover{background:rgba(45,110,168,.5);color:white;}
+
+/* ── CARS ── */
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:80px;}
+.car-card{background:linear-gradient(135deg,#12243A,#162E4A);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;text-align:center;transition:transform .2s;}
+.car-card:hover{transform:translateY(-3px);}
+.car-card.top-pick{border-color:var(--coast);background:linear-gradient(135deg,#1A2E3A,#1A3A4C);}
+.car-emoji{font-size:44px;margin-bottom:12px;}
+.car-card h3{font-family:'Playfair Display',serif;font-size:18px;color:white;margin-bottom:8px;}
+.top-pick-badge{display:inline-block;background:linear-gradient(90deg,var(--sun),var(--coast));color:#1A1A00;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+.car-card p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:12px;}
+.car-pros{list-style:none;text-align:left;font-size:12px;color:rgba(255,255,255,.75);display:flex;flex-direction:column;gap:4px;}
+.car-pros li::before{content:'✓ ';color:#8CC492;}
+.car-where{margin-top:14px;font-size:12px;color:var(--mist);}
+.car-where a{color:var(--coast);text-decoration:none;}
+
+/* ── EXPERIENCES ── */
+.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:80px;}
+.exp-card{background:linear-gradient(135deg,#12243A,#162E4A);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px;position:relative;overflow:hidden;}
+.exp-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 16px 0 80px;opacity:.15;}
+.exp-card.red::before{background:#FF5050;}.exp-card.gold::before{background:#F4A435;}
+.exp-card.teal::before{background:#40B4C4;}.exp-card.green::before{background:#50C850;}
+.exp-card.purple::before{background:#9050C8;}
+.exp-icon{font-size:32px;margin-bottom:12px;display:block;}
+.exp-card h3{font-size:16px;font-weight:700;color:white;margin-bottom:6px;}
+.exp-card p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:12px;}
+.exp-link a{color:var(--coast);text-decoration:none;font-size:13px;font-weight:500;}
+.exp-link a:hover{color:white;}
+
+/* ── TIPS ── */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:80px;}
+.tip-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:20px;}
+.tip-card h4{font-size:14px;font-weight:700;color:var(--coast);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.tip-card p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;}
+
+/* ── BOOKS ── */
+.books-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:80px;}
+.book-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;border-top:3px solid var(--coast);transition:transform .2s,box-shadow .2s;}
+.book-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3);}
+.book-city{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--sage);margin-bottom:6px;}
+.book-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:white;margin-bottom:4px;}
+.book-addr{font-size:12px;color:var(--mist);margin-bottom:10px;}
+.book-desc{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;}
+
+/* ── BOOKING GRID ── */
+.booking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:80px;}
+.booking-link{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-decoration:none;transition:all .2s;display:block;}
+.booking-link:hover{background:rgba(244,164,53,.1);border-color:rgba(244,164,53,.3);transform:translateY(-2px);}
+.booking-link .bl-icon{font-size:24px;margin-bottom:8px;}
+.booking-link .bl-name{font-size:14px;font-weight:600;color:white;margin-bottom:4px;}
+.booking-link .bl-note{font-size:12px;color:rgba(255,255,255,.5);}
+.booking-link .bl-urgency{font-size:11px;color:#FF8080;font-weight:600;margin-top:6px;}
+
+/* ── KML SECTION ── */
+.kml-section{background:linear-gradient(135deg,#12243A,#162E4A);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;margin-bottom:60px;text-align:center;}
+.kml-section h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--coast);margin-bottom:10px;}
+.kml-section p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6;}
+.kml-btn{background:linear-gradient(90deg,var(--sky),var(--ocean));color:white;border:none;border-radius:20px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px;}
+.kml-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+
+/* ── FOOTER ── */
+.footer{background:#080E18;padding:40px;text-align:center;border-top:1px solid rgba(255,255,255,.06);}
+.footer p{font-size:14px;color:rgba(255,255,255,.4);line-height:1.7;}
+.footer .highlight{color:var(--coast);font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- Floating Refresh Button -->
+<button class="refresh-pill" onclick="hardRefresh()" title="Force refresh">
+  <span class="ri">↻</span> Refresh
+</button>
+
+<!-- Notification Permission Banner -->
+<div id="notif-banner" class="notif-banner">
+  <p>🔔 Enable notifications to get alerts when each day unlocks and 2-hour warnings before booked events.</p>
+  <button class="notif-btn" onclick="requestNotifications()">Enable Alerts</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-emoji">🌅</span>
+  <h1>California Road Trip<br><span>1–10 August 2026</span></h1>
+  <p>Ten days. Four adventurers. Cliffs, surf, culture and the Pacific Coast Highway.</p>
+</div>
+
+<nav class="nav">
+  <a href="#route">Route</a>
+  <a href="#itinerary">Day by Day</a>
+  <a href="#tips">Tips</a>
+</nav>
+
+<div class="container">
+
+<!-- ROUTE MAP -->
+<div id="route" style="scroll-margin-top:80px">
+  <div class="route-map">
+    <div class="route-stops" id="route-stops">
+      <div class="route-stop" id="rst-1">
+        <div class="route-dot highlight" id="rdot-1">✈️</div>
+        <span class="route-label" id="rlbl-1">SFO<br>Arrive</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-2">
+        <div class="route-dot booked" id="rdot-2">🌉</div>
+        <span class="route-label" id="rlbl-2">San<br>Francisco</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-3">
+        <div class="route-dot booked" id="rdot-3">🏔️</div>
+        <span class="route-label" id="rlbl-3">Yosemite<br>(2 nights)</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-5">
+        <div class="route-dot highlight" id="rdot-5">🎸</div>
+        <span class="route-label" id="rlbl-5">Santa<br>Clara</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-6">
+        <div class="route-dot booked" id="rdot-6">🌴</div>
+        <span class="route-label" id="rlbl-6">Santa<br>Barbara</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-7">
+        <div class="route-dot booked" id="rdot-7">🌊</div>
+        <span class="route-label" id="rlbl-7">Cambria</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-8">
+        <div class="route-dot" id="rdot-8">🏄</div>
+        <span class="route-label" id="rlbl-8">Big Sur<br>PCH</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-9">
+        <div class="route-dot booked" id="rdot-9">🦦</div>
+        <span class="route-label" id="rlbl-9">Monterey</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-stop" id="rst-10">
+        <div class="route-dot highlight" id="rdot-10">✈️</div>
+        <span class="route-label" id="rlbl-10">SFO<br>Home</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY BY DAY -->
+<div id="itinerary" style="scroll-margin-top:80px">
+  <div class="section-header">
+    <h2>Day by Day</h2>
+    <div class="section-divider"></div>
+    <p style="margin-top:16px">Nine nights, ten days. Every one earns its place.</p>
+  </div>
+  <div class="days-grid">
+
+    <!-- DAY 1 -->
+    <div class="day-card" id="day-card-1">
+      <div class="lock-screen" id="lock-1">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 1</div>
+        <div class="ls-countdown" id="cd-1"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Saturday 1 August</span>
+        <div class="day-drive">🚗 Airport to city · 30 mins</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li>Land at SFO, collect bags — no hire car today, Uber XL to the hotel (~$50–65)</li>
+            <li>Check in to The San Francisco Proper — drop bags and freshen up</li>
+            <li>Stroll <a href="https://maps.google.com/?q=Fishermans+Wharf+San+Francisco" target="_blank">Fisherman's Wharf</a> — Dungeness crab sourdough bowl at Boudin Bakery</li>
+            <li>Walk the <a href="https://maps.google.com/?q=Embarcadero+San+Francisco" target="_blank">Embarcadero</a> at golden hour — brilliant first impression of the city</li>
+            <li>Dinner in the <a href="https://maps.google.com/?q=Ferry+Building+San+Francisco" target="_blank">Ferry Building</a> food hall — oysters, wine, San Francisco Bay on three sides</li>
+            <li>Nightcap at Charmaine's rooftop bar — panoramic city views from your own hotel</li>
+          </ul>
+          <div class="special-note">💡 Stay up until 10pm local time on arrival day and you'll be on California time by morning.</div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🍽️ Eat Tonight — Hayes Valley</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <a href="https://www.richtablesf.com/" target="_blank" style="color:var(--coast)">Rich Table</a> — seasonal Californian, one of the best in the city ·
+              <a href="https://www.absinthe.com/" target="_blank" style="color:var(--coast)">Absinthe Brasserie</a> — French brasserie, Hayes Valley institution ·
+              <a href="https://www.zunicafe.com/" target="_blank" style="color:var(--coast)">Zuni Café</a> — legendary roast chicken &amp; oysters<br>
+              <a class="map-btn" href="https://maps.google.com/?q=Hayes+Valley+restaurants+San+Francisco" target="_blank">📍 Map: Hayes Valley dining</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏨 Stay — San Francisco (2 nights) ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.properhotel.com/hotels/san-francisco/" target="_blank">The San Francisco Proper</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Beautiful Edwardian building in the heart of the city. Charmaine's rooftop bar has one of the best views in SF. Mid-Market — everything walkable. Nights 1 &amp; 2.<br><strong style="color:var(--coast)">Ref: 77349SG160507</strong> · Premier Double Double · Aug 1–3<br>
+            🏊 Rooftop bar · No pool · No gym · Breakfast not included</div>
+            <a class="map-btn" href="https://maps.google.com/?q=45+McAllister+St+San+Francisco+Proper+Hotel" target="_blank">📍 Navigate to hotel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card" id="day-card-2">
+      <div class="lock-screen" id="lock-2">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 2</div>
+        <div class="ls-countdown" id="cd-2"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Sunday 2 August</span>
+        <div class="day-drive">🚗 In-city · Alcatraz · Shakespeare in the Park</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>08:25 Board / 08:40 Departs:</strong> <a href="https://www.cityexperiences.com/san-francisco/city-cruises/alcatraz/" target="_blank">Alcatraz Day Tour</a> ✓ BOOKED — <a class="map-btn" href="https://maps.google.com/?q=Pier+33+Alcatraz+Ferry+San+Francisco" target="_blank">📍 Pier 33</a></li>
+            <li><strong>Afternoon:</strong> <a href="https://maps.google.com/?q=Haight-Ashbury+San+Francisco" target="_blank">Haight-Ashbury</a> — Summer of Love street art, extraordinary vintage shops. Golden Gate Park, Painted Ladies.</li>
+            <li><strong>Late afternoon:</strong> Golden Gate Ferry to <a href="https://maps.google.com/?q=Sausalito+California" target="_blank">Sausalito</a> (30 mins) — aperitivo on the waterfront, ferry back.</li>
+            <li><strong>Dinner:</strong> North Beach — Tony's Pizza Napoletana. Nightcap at Vesuvio bar, Jack Kerouac's local. <a class="map-btn" href="https://maps.google.com/?q=North+Beach+San+Francisco" target="_blank">📍 North Beach</a></li>
+            <li><strong>Home:</strong> Try a <a href="https://waymo.com/waymo-one/" target="_blank">Waymo One</a> driverless taxi back to the hotel — download the app before you travel.</li>
+          </ul>
+          <div class="special-note" style="border-left-color:#40B4C4;background:linear-gradient(90deg,rgba(64,180,196,.15),rgba(64,180,196,.05))">🎭 <strong>Tonight: Antony &amp; Cleopatra</strong> — Free Shakespeare in the Park, McLaren Park, 6pm. No tickets needed — just turn up. A genuinely perfect SF evening. <a href="https://sfshakes.org/performance/free-shakes/ac/" target="_blank" style="color:var(--coast)">sfshakes.org →</a> <a class="map-btn" href="https://maps.google.com/?q=McLaren+Park+San+Francisco+Shakespeare" target="_blank">📍 McLaren Park</a></div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏨 Stay — San Francisco (night 2) ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.properhotel.com/hotels/san-francisco/" target="_blank">The San Francisco Proper</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Final night at the Proper. Pack bags tonight — tomorrow: Yosemite.<br><strong style="color:var(--coast)">Ref: 77349SG160507</strong></div>
+            <a class="map-btn" href="https://maps.google.com/?q=45+McAllister+St+San+Francisco+Proper+Hotel" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>📚 Bookshops — San Francisco</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong><a href="https://citylights.com/" target="_blank" style="color:var(--coast)">City Lights Booksellers</a></strong> — 261 Columbus Ave, North Beach. Open daily until midnight. The most famous bookshop in America, founded by Beat poet Lawrence Ferlinghetti in 1953. Pair with a Vesuvio cocktail next door. <a class="map-btn" href="https://maps.google.com/?q=City+Lights+Booksellers+261+Columbus+Ave+San+Francisco" target="_blank">📍 Map</a><br><br>
+              <strong><a href="https://www.greenapplebooks.com/" target="_blank" style="color:var(--coast)">Green Apple Books</a></strong> — 506 Clement St, Inner Richmond. SF institution since 1967 — new, used, vinyl and magazines. <a class="map-btn" href="https://maps.google.com/?q=Green+Apple+Books+506+Clement+St+San+Francisco" target="_blank">📍 Map</a><br><br>
+              <strong><a href="https://www.booksmith.com/" target="_blank" style="color:var(--coast)">The Booksmith</a></strong> — 1644 Haight St, Haight-Ashbury. Great literary fiction and narrative nonfiction — perfect after Golden Gate Park. <a class="map-btn" href="https://maps.google.com/?q=The+Booksmith+1644+Haight+St+San+Francisco" target="_blank">📍 Map</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card" id="day-card-3">
+      <div class="lock-screen" id="lock-3">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 3</div>
+        <div class="ls-countdown" id="cd-3"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Monday 3 August ✓ BOOKED</span>
+        <div class="day-drive">🚗 ~3.5 hrs east via I-580 &amp; Hwy 120</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>07:00 — Collect hire car:</strong> Hertz at SFO. <strong style="color:var(--coast)">Jeep Wrangler 4WD</strong> · Conf: <strong style="color:var(--coast)">L6012833929</strong>. Removable roof, proper off-road clearance for Yosemite. <a class="map-btn" href="https://maps.google.com/?q=Hertz+San+Francisco+International+Airport" target="_blank">📍 Hertz SFO</a></li>
+            <li>Bay Bridge east, rolling hills, then the Sierra Nevada rising ahead of you.</li>
+            <li>Livermore wine country as you pass through — optional 30-min winery stop if making good time.</li>
+            <li><strong>Yosemite entry:</strong> America the Beautiful pass covers entrance fee. Your Autocamp booking covers timed entry — no separate permit needed. <a class="map-btn" href="https://maps.google.com/?q=Yosemite+Valley+Entrance+California" target="_blank">📍 Valley entrance</a></li>
+            <li><strong>Tunnel View:</strong> El Capitan on the left, Half Dome ahead, Bridalveil Fall on the right. Every person who sees this for the first time stops breathing. <a class="map-btn" href="https://maps.google.com/?q=Tunnel+View+Yosemite" target="_blank">📍 Tunnel View</a></li>
+            <li><strong>Valley Loop:</strong> El Capitan Meadow, Yosemite Falls, Cook's Meadow, Mirror Lake trailhead. Watch climbers on 3,000-foot granite walls. <a class="map-btn" href="https://maps.google.com/?q=El+Capitan+Meadow+Yosemite" target="_blank">📍 El Capitan</a></li>
+            <li><strong>Evening:</strong> Dinner at Autocamp, fire pit under the stars. The Milky Way on a clear August night is extraordinary.</li>
+          </ul>
+          <div class="special-note">⚠️ Autocamp covers timed entry for both nights. America the Beautiful pass covers entrance. Store all food in bear boxes — never in the car overnight.</div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🥾 Tonight's Trails (Day 3)</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong style="color:var(--coast)">Easy (1 hr):</strong> <a href="https://www.nps.gov/yose/planyourvisit/lowerfall.htm" target="_blank" style="color:var(--mist)">Lower Yosemite Falls</a> — 1 mile, flat, the base of N. America's tallest waterfall<br>
+              <strong style="color:var(--coast)">Easy (1 hr):</strong> <a href="https://www.nps.gov/yose/planyourvisit/valleyfloortrail.htm" target="_blank" style="color:var(--mist)">Cook's Meadow Loop</a> — 1 mile, flat, iconic Half Dome views<br>
+              <strong style="color:var(--coast)">Moderate (2.5 hrs):</strong> <a href="https://www.nps.gov/yose/planyourvisit/mirrorlake.htm" target="_blank" style="color:var(--mist)">Mirror Lake Loop</a> — 5 miles, beautiful reflection pool at dawn
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏕️ Stay — Yosemite (Nights 3 &amp; 4) ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://autocamp.com/locations/yosemite/" target="_blank">Autocamp Yosemite</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Luxury Airstream trailers in a forest clearing 1.5 miles from the Valley entrance. Heated floors, cashmere blankets, fire pits.<br><strong style="color:var(--coast)">ID: 36044SG131230</strong> · Premium BaseCamp Suite · 4 adults · Aug 3–5 · $2,009.60<br>🔥 Fire pits · Outdoor area · No pool/gym · Breakfast not included</div>
+            <a class="map-btn" href="https://maps.google.com/?q=Autocamp+Yosemite+California" target="_blank">📍 Navigate to Autocamp</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🚙 Hire Car ✓ BOOKED</h4>
+            <div class="hotel-name">Jeep Wrangler 4WD <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Midsize All Terrain · Hertz SFO<br><strong style="color:var(--coast)">Confirmation: L6012833929</strong><br>Collect: Mon 3 Aug · 07:00 · SFO<br>Return: Sun 9 Aug · 17:00 · SFO<br>6 days · Removable roof panels · 4WD for Yosemite &amp; PCH</div>
+            <a class="map-btn" href="https://maps.google.com/?q=Hertz+San+Francisco+International+Airport+Rental+Car+Center" target="_blank">📍 Hertz SFO Rental Center</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card" id="day-card-4">
+      <div class="lock-screen" id="lock-4">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 4</div>
+        <div class="ls-countdown" id="cd-4"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Tuesday 4 August ✓ BOOKED</span>
+        <div class="day-drive">🚶 No driving — on foot, bike &amp; free shuttle</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>Sunrise:</strong> <a href="https://maps.google.com/?q=Mirror+Lake+Yosemite" target="_blank">Mirror Lake</a> or Valley View before crowds. The light on Half Dome at dawn is one of the great natural spectacles on Earth.</li>
+            <li><strong>Morning hike:</strong> <a href="https://www.nps.gov/yose/planyourvisit/valleyfloortrail.htm" target="_blank">Valley Floor Trail</a> — gentle 13-mile loop (or shorter sections): El Capitan Meadow, Yosemite Falls base, Sentinel Beach. <a class="map-btn" href="https://maps.google.com/?q=Yosemite+Falls+trailhead" target="_blank">📍 Falls trailhead</a></li>
+            <li><strong>Yosemite Falls:</strong> Tallest waterfall in N. America at 2,425 feet. Lower falls trail (easy, 1 hour) puts you at the roaring base.</li>
+            <li><strong>Afternoon:</strong> Rent bikes from Yosemite Valley Lodge — the best way to cover ground with the most scenery and least effort.</li>
+            <li><strong>Half Dome views:</strong> <a href="https://maps.google.com/?q=Glacier+Point+Yosemite" target="_blank">Glacier Point</a> for the classic Half Dome profile — outstanding photography, no strenuous hiking required.</li>
+            <li><strong>Evening:</strong> Fire pits and stargazing at Autocamp. Yosemite is one of the darkest-sky locations in California.</li>
+          </ul>
+          <div class="special-note">🌟 Arrive at Valley attractions before 9am to beat the crowds. Valley shuttle is free and goes everywhere.</div>
+          <div class="special-note" style="margin-top:10px;border-left-color:#50C880;background:linear-gradient(90deg,rgba(80,200,128,.12),rgba(80,200,128,.04))">🐻 <strong>Wildlife:</strong> Black bears are present — make noise on trails, never store food in the car, use bear boxes at Autocamp overnight. Rattlesnakes possible on sun-warmed rocks; watch where you step. Mountain lions exist but are almost never seen. Millions hike here every year safely — be sensible and you'll be absolutely fine. <a href="https://www.nps.gov/yose/learn/nature/bears.htm" target="_blank" style="color:var(--coast)">NPS bear safety →</a></div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🥾 Full Day Trails</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong style="color:var(--coast)">Easy (1 hr):</strong> <a href="https://www.nps.gov/yose/planyourvisit/lowerfall.htm" target="_blank" style="color:var(--mist)">Lower Yosemite Falls</a> — the spray in August is phenomenal<br>
+              <strong style="color:var(--coast)">Moderate (3 hrs):</strong> <a href="https://www.nps.gov/yose/planyourvisit/misttrail.htm" target="_blank" style="color:var(--mist)">Mist Trail to Vernal Falls</a> — stone staircase, emerald pool at the top. The classic Yosemite hike. You will get wet.<br>
+              <strong style="color:var(--coast)">Full day:</strong> <a href="https://www.nps.gov/yose/planyourvisit/valleyfloortrail.htm" target="_blank" style="color:var(--mist)">Valley Floor Trail (13 miles)</a> — by bike or shuttle sections<br>
+              <a href="https://www.nps.gov/yose/planyourvisit/hiking.htm" target="_blank" style="color:var(--coast)">Full NPS trail map &amp; conditions →</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏕️ Stay — Yosemite (Night 2) ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://autocamp.com/locations/yosemite/" target="_blank">Autocamp Yosemite</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Second and final night. Tonight, after a full day in the valley, the fire pit hits different.<br><strong style="color:var(--coast)">ID: 36044SG131230</strong><br>Pack bags tonight — tomorrow: early start to Santa Clara.</div>
+            <a class="map-btn" href="https://maps.google.com/?q=Autocamp+Yosemite+California" target="_blank">📍 Navigate to Autocamp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card" id="day-card-5">
+      <div class="lock-screen" id="lock-5">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 5</div>
+        <div class="ls-countdown" id="cd-5"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Wednesday 5 August ✓ BOOKED · 🎸 AC/DC NIGHT</span>
+        <div class="day-drive">🚗 ~3 hrs west via Hwy 120 &amp; I-580 · 🎸 AC/DC, Levi's Stadium, evening</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>Early morning:</strong> One last sunrise hike — Mirror Lake loop or Yosemite Falls base. You'll have it almost to yourselves at dawn.</li>
+            <li><strong>Drive west:</strong> Hwy 120 out of Yosemite through the foothills, I-580 west. ~3 hours through the Diablo Range. <a class="map-btn" href="https://maps.google.com/maps/dir/?api=1&origin=Yosemite+Valley&destination=Santa+Clara+CA&travelmode=driving" target="_blank">📍 Route to Santa Clara</a></li>
+            <li><strong>Afternoon:</strong> Check in, freshen up. Wander <a href="https://maps.google.com/?q=Santana+Row+San+Jose+California" target="_blank">Santana Row</a> for a pre-gig meal — or visit the <a href="https://www.apple.com/retail/appleparkvisitorcenter/" target="_blank">Apple Park Visitor Centre</a> if you have time (free, genuinely impressive). <a class="map-btn" href="https://maps.google.com/?q=Apple+Park+Visitor+Center+Cupertino" target="_blank">📍 Apple Park</a></li>
+            <li><strong>🎸 AC/DC — Levi's Stadium:</strong> One of the greatest rock bands of all time, live at the 68,000-seat home of the 49ers. Highway to Hell, Back in Black, Thunderstruck. <a class="map-btn" href="https://maps.google.com/?q=Levis+Stadium+Santa+Clara+California" target="_blank">📍 Levi's Stadium</a></li>
+            <li>Get there early for the atmosphere. Pre-gig beers on Santana Row, then Uber to the stadium — parking is a nightmare at big shows.</li>
+          </ul>
+          <div class="special-note">🎸 Levi's Stadium is 1.5 miles from Hotel Valencia — take an Uber. The walk back is even doable if the energy is still high after Highway to Hell.</div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏨 Stay — Santa Clara ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.hotelvalencia-santanarow.com/" target="_blank">Hotel Valencia Santana Row</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Right on Santana Row's buzzing strip. Rooftop terrace, pool, great restaurant.<br><strong style="color:var(--coast)">Confirmation: 5458762464 · PIN: 0472</strong><br>Check-in from 15:00 · Check-out by 12:00<br>🏊 Pool · 🍳 Breakfast not included<br><small style="color:rgba(255,255,255,.4)">355 Santana Row, San Jose, CA 95128</small></div>
+            <a class="map-btn" href="https://maps.google.com/?q=355+Santana+Row+San+Jose+Hotel+Valencia" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="special-note" style="margin-top:12px;border-left-color:#50C880;background:linear-gradient(90deg,rgba(26,106,58,.2),rgba(26,106,58,.05))">🎸 <strong>AC/DC tickets ✓ BOOKED</strong> — Levi's Stadium, 5th August. You're going to see one of the greatest rock bands of all time. Get in.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-card" id="day-card-6">
+      <div class="lock-screen" id="lock-6">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 6</div>
+        <div class="ls-countdown" id="cd-6"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number">Thursday 6 August</span>
+        <div class="day-drive">🚗 ~3 hrs south via Hwy 101</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>Morning drive:</strong> South on Hwy 101 through the Salinas Valley — John Steinbeck country, vast agricultural plains, Santa Lucia mountains to the west.</li>
+            <li><strong><a href="https://www.santabarbaramission.org/" target="_blank">Santa Barbara Mission</a></strong> — founded 1786, the most beautiful of California's 21 missions. Rose garden, twin bell towers, still an active parish. <a class="map-btn" href="https://maps.google.com/?q=Santa+Barbara+Mission+California" target="_blank">📍 The Mission</a></li>
+            <li><strong>State Street</strong> — independent boutiques, galleries, cafés, the 1924 Granada Theatre. <a class="map-btn" href="https://maps.google.com/?q=State+Street+Santa+Barbara" target="_blank">📍 State Street</a></li>
+            <li><strong>The Funk Zone</strong> — converted warehouses: art studios, 20+ wine tasting rooms, craft breweries, excellent restaurants. Your first evening. <a class="map-btn" href="https://maps.google.com/?q=Funk+Zone+Santa+Barbara" target="_blank">📍 Funk Zone</a></li>
+            <li><strong>Stearns Wharf</strong> — California's oldest working wharf, pelicans, harbour seals, fresh seafood shacks. <a class="map-btn" href="https://maps.google.com/?q=Stearns+Wharf+Santa+Barbara" target="_blank">📍 Stearns Wharf</a></li>
+          </ul>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🍽️ Eat Tonight — The Funk Zone</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <a href="https://thelarksb.com/menus/" target="_blank" style="color:var(--coast)">The Lark</a> — New American seasonal, the best dinner in the Funk Zone ·
+              <a href="https://www.loquitasb.com/menus" target="_blank" style="color:var(--coast)">Loquita</a> — Spanish tapas &amp; wood-fire paella ·
+              <a href="https://luckypennysb.com/" target="_blank" style="color:var(--coast)">Lucky Penny</a> — wood-fired pizza, casual, excellent<br>
+              <a class="map-btn" href="https://maps.google.com/?q=The+Lark+restaurant+Santa+Barbara" target="_blank">📍 The Lark</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏨 Stay — Santa Barbara ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.hilton.com/en/hotels/sbabhhh-hilton-santa-barbara-beachfront-resort/" target="_blank">Hilton Santa Barbara Beachfront Resort</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Right on East Beach, direct beach access, pool, ocean views, Cabrillo Blvd promenade.<br>🏊 Pool · 🏋️ Gym · 🍳 Breakfast not included (Hilton points stay)<br><small style="color:rgba(255,255,255,.4)">Via Hilton Honors points</small></div>
+            <a class="map-btn" href="https://maps.google.com/?q=Hilton+Santa+Barbara+Beachfront+Resort" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>📚 Bookshops — Santa Barbara</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong><a href="https://www.chaucersbooks.com/" target="_blank" style="color:var(--coast)">Chaucer's Books</a></strong> — 3321 State St, Upper State Street. Santa Barbara's beloved indie since 1974 — a labyrinth of literary discovery, knowledgeable staff. <a class="map-btn" href="https://maps.google.com/?q=Chaucers+Books+3321+State+St+Santa+Barbara" target="_blank">📍 Map</a><br><br>
+              <strong><a href="https://www.bookden.com/" target="_blank" style="color:var(--coast)">The Book Den</a></strong> — 11 E Anapamu St, Downtown. New, used and out-of-print since the 1930s — perfect for a morning browse before the Mission. <a class="map-btn" href="https://maps.google.com/?q=The+Book+Den+11+E+Anapamu+St+Santa+Barbara" target="_blank">📍 Map</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 7 -->
+    <div class="day-card" id="day-card-7">
+      <div class="lock-screen" id="lock-7">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 7</div>
+        <div class="ls-countdown" id="cd-7"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number booked">Friday 7 August ✓ BOOKED</span>
+        <div class="day-drive">🚗 ~2.5 hrs · Pismo Beach · Elephant Seals · Cambria</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>Morning:</strong> Early checkout — grab coffee and hit Highway 1 north. The coastline starts immediately.</li>
+            <li><strong><a href="https://maps.google.com/?q=Pismo+Beach+Pier+California" target="_blank">Pismo Beach</a></strong> (1.5 hrs from SB) — lunch on the clifftop pier. Clam chowder, a walk on the sand, completely unpretentious and great. <a class="map-btn" href="https://maps.google.com/?q=Pismo+Beach+Pier+California" target="_blank">📍 Pismo Beach pier</a></li>
+            <li><strong><a href="https://maps.google.com/?q=Piedras+Blancas+Elephant+Seal+Rookery" target="_blank">Piedras Blancas Elephant Seals</a></strong> — free roadside pullout. Hundreds of enormous elephant seals hauled out in August moult. They look simultaneously prehistoric and ridiculous. Allow 30 minutes. <a class="map-btn" href="https://maps.google.com/?q=Piedras+Blancas+Elephant+Seal+Rookery+California" target="_blank">📍 Elephant seals</a></li>
+            <li><strong>San Simeon Cove</strong> — a few minutes north of the seals. Quiet bay, great for coffee and a stretch before Cambria. <a class="map-btn" href="https://maps.google.com/?q=San+Simeon+Cove+California" target="_blank">📍 San Simeon</a></li>
+            <li><strong>Arrive Cambria</strong> — walk Moonstone Beach driftwood boardwalk at sunset. Dinner in the village on Burton Drive. <a class="map-btn" href="https://maps.google.com/?q=Moonstone+Beach+Boardwalk+Cambria" target="_blank">📍 Moonstone boardwalk</a></li>
+          </ul>
+          <div class="special-note">🐘 The elephant seals at Piedras Blancas are completely free and totally unmissable. August is peak moult — they'll be enormous and entirely unbothered by you standing 10 feet away.</div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🌊 Stay — Cambria ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.moonstonelanding.com/" target="_blank">Moonstone Landing</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Right on Moonstone Beach. Ocean-view rooms, sound of the Pacific all night.<br><strong style="color:var(--coast)">Confirmation: 5421270918 · PIN: 3027</strong><br>Check-in 15:00–21:00 · Check-out 08:00–11:00<br>🍳 Breakfast included · No pool/gym<br><small style="color:#FF8080">⚠️ Need to leave by 7am Day 8 for whale watch — arrange early key drop with hotel</small><br><small style="color:rgba(255,255,255,.4)">6240 Moonstone Beach Drive, Cambria</small></div>
+            <a class="map-btn" href="https://maps.google.com/?q=6240+Moonstone+Beach+Drive+Cambria+California" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>📚 Bookshops — Cambria</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong><a href="https://www.coalescebooks.com/" target="_blank" style="color:var(--coast)">Coalesce Bookstore</a></strong> — 845 Main St, Cambria East Village. Cambria's charming village bookshop — a good browse while exploring the village in the evening after dinner. <a class="map-btn" href="https://maps.google.com/?q=Coalesce+Bookstore+845+Main+St+Cambria+California" target="_blank">📍 Map</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 8 -->
+    <div class="day-card" id="day-card-8">
+      <div class="lock-screen" id="lock-8">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 8</div>
+        <div class="ls-countdown" id="cd-8"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number">Saturday 8 August 🏎️ Car Week</span>
+        <div class="day-drive">🚗 ~2.5 hrs · Most spectacular road on earth · Whale Watch 14:30</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>7am start</strong> — leave Moonstone Beach by 7am (arrange early key drop). Cambria to Big Sur is ~1 hour of stunning cliff road.</li>
+            <li><strong>Bixby Creek Bridge</strong> — the most photographed bridge in California. Stop, walk it, photograph from every angle. Pull over on the south side for the classic shot. <a class="map-btn" href="https://maps.google.com/?q=Bixby+Creek+Bridge+Big+Sur" target="_blank">📍 Bixby Bridge</a></li>
+            <li><strong>Pfeiffer Beach</strong> — purple sand, Keyhole Arch. Unsigned turn: download the pin offline the night before. Cash only. Worth finding. <a class="map-btn" href="https://maps.google.com/?q=Pfeiffer+Beach+Big+Sur+California" target="_blank">📍 Pfeiffer Beach</a></li>
+            <li><strong>McWay Falls</strong>, Julia Pfeiffer Burns SP — waterfall dropping onto an untouched turquoise cove. Short flat walk to viewpoint. <a class="map-btn" href="https://maps.google.com/?q=McWay+Falls+Julia+Pfeiffer+Burns+State+Park" target="_blank">📍 McWay Falls</a></li>
+            <li><strong>🐋 Whale Watch 14:30 ✓ BOOKED</strong> — departs Fisherman's Wharf Monterey, back by ~17:30. Humpbacks, blue whales and dolphins all possible. <a class="map-btn" href="https://maps.google.com/?q=Fishermans+Wharf+Monterey+California+whale+watching" target="_blank">📍 Monterey Wharf</a></li>
+            <li><strong>Evening:</strong> Stroll Cannery Row, dinner on the waterfront, collapse at Casa Munras. <a class="map-btn" href="https://maps.google.com/?q=Cannery+Row+Monterey+California" target="_blank">📍 Cannery Row</a></li>
+          </ul>
+          <div class="special-note" style="border-left-color:#F4A435;background:linear-gradient(90deg,rgba(244,164,53,.2),rgba(244,164,53,.05))">🏎️ <strong>Monterey Car Week Aug 7–16:</strong> You arrive on the opening weekend. The Pre-Reunion at Laguna Seca (Aug 8–9) brings pre-war GP cars, 1950s sports racers and '60s F1 back to life on a legendary circuit. <a href="https://www.seemonterey.com/monterey-car-week-events-by-day/" target="_blank" style="color:var(--coast)">Full Car Week schedule →</a> <a class="map-btn" href="https://maps.google.com/?q=WeatherTech+Raceway+Laguna+Seca+Salinas+California" target="_blank">📍 Laguna Seca</a></div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>🍽️ Eat Tonight — Cannery Row</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <a href="https://www.estebanrestaurant.com/menus" target="_blank" style="color:var(--coast)">Estéban</a> (on-site, Casa Munras) — Spanish tapas, paella, wood-fired. Tapas happy hour 4:30–6pm · Sat dinner until 9pm ·
+              <a href="https://www.charthouse.com/locations/monterey" target="_blank" style="color:var(--coast)">The Chart House</a> — 180° bay views, prime rib ·
+              <a href="https://www.thefishhopper.com/" target="_blank" style="color:var(--coast)">The Fish Hopper</a> — sustainable seafood on a historic pier<br>
+              <a class="map-btn" href="https://maps.google.com/?q=Esteban+Restaurant+Monterey+California" target="_blank">📍 Estéban</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🦦 Stay — Monterey ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.casamunras.com/" target="_blank">Casa Munras Garden Hotel &amp; Spa</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Historic 1824 Adobe boutique hotel. Pool, gardens, Estéban restaurant on site. Short walk to Cannery Row &amp; Fisherman's Wharf.<br><strong style="color:var(--coast)">Confirmation: 6894532419 · PIN: 7754</strong><br>Check-in from 16:00 · Check-out by 12:00<br>🏊 Pool · 🏋️ Gym · 🍳 Breakfast not included<br><small style="color:rgba(255,255,255,.4)">700 Munras Avenue, Monterey, CA 93940</small></div>
+            <a class="map-btn" href="https://maps.google.com/?q=700+Munras+Avenue+Monterey+California+Casa+Munras" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>📚 Bookshops — Monterey</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <strong><a href="https://www.bookworkspg.com/" target="_blank" style="color:var(--coast)">Bookworks</a></strong> — 667 Lighthouse Ave, Pacific Grove. A proper neighbourhood bookshop with a coffee shop inside — order a flat white and browse before or after the whale watch. Excellent California coast section. <a class="map-btn" href="https://maps.google.com/?q=Bookworks+667+Lighthouse+Ave+Pacific+Grove+California" target="_blank">📍 Map</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 9 -->
+    <div class="day-card" id="day-card-9">
+      <div class="lock-screen" id="lock-9">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 9</div>
+        <div class="ls-countdown" id="cd-9"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number">Sunday 9 August</span>
+        <div class="day-drive">🚗 ~2 hrs total · Return hire car tonight</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>Morning:</strong> Slow breakfast on Cannery Row. A wonderful place to wake up slowly on your last proper morning. <a class="map-btn" href="https://maps.google.com/?q=Cannery+Row+Monterey+California" target="_blank">📍 Cannery Row</a></li>
+            <li><strong><a href="https://maps.google.com/?q=Carmel-by-the-Sea+California" target="_blank">Carmel-by-the-Sea</a></strong> — no street numbers, no parking meters, dogs welcome everywhere. Ocean Avenue galleries, coffee at Carmel Bakery. Completely charming. <a class="map-btn" href="https://maps.google.com/?q=Ocean+Avenue+Carmel-by-the-Sea" target="_blank">📍 Ocean Ave</a></li>
+            <li><strong><a href="https://www.pebblebeach.com/visit/17-mile-drive/" target="_blank">17-Mile Drive</a></strong> — the Lone Cypress, Ghost Tree, Pebble Beach golf course, Bird Rock seal colony. $12 entry. The perfect final flourish. <a class="map-btn" href="https://maps.google.com/maps/dir/?api=1&destination=17+Mile+Drive+Pebble+Beach+California&travelmode=driving" target="_blank">📍 17-Mile Drive</a></li>
+            <li><strong>Afternoon:</strong> Drive to SFO (~2 hrs). <strong>Return Jeep Wrangler to Hertz by 17:00</strong> · Conf: <strong style="color:var(--coast)">L6012833929</strong> — the rental centre is right at the airport. <a class="map-btn" href="https://maps.google.com/?q=Hertz+San+Francisco+International+Airport+Rental+Car+Center" target="_blank">📍 Hertz SFO</a></li>
+            <li>AirTrain to Aloft. Check in. Early dinner. Pack. Early night.</li>
+          </ul>
+          <div class="special-note">⏰ 08:20 flight = at check-in by 06:00. Return the car tonight. Tomorrow morning is effortless.</div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🏨 Stay — SFO Airport ✓ BOOKED</h4>
+            <div class="hotel-name"><a href="https://www.marriott.com/hotels/travel/sfocl-aloft-san-francisco-airport/" target="_blank">Aloft San Francisco Airport</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
+            <div class="hotel-desc">Short shuttle to terminals. Check in, sleep, walk to departures.<br><strong style="color:var(--coast)">Confirmation: 6751586359 · PIN: 7035</strong><br>Check-in from 15:00 · Check-out by 12:00<br>🏊 Pool · 🏋️ Gym · 🍳 Breakfast not included<br><small style="color:rgba(255,255,255,.4)">401 East Millbrae Avenue, Millbrae, CA 94030</small></div>
+            <a class="map-btn" href="https://maps.google.com/?q=Aloft+San+Francisco+Airport+Millbrae" target="_blank">📍 Navigate to hotel</a>
+          </div>
+          <div class="stay-box" style="margin-top:12px">
+            <h4>📚 Bookshops — Carmel</h4>
+            <div class="hotel-desc" style="margin-top:6px">
+              <a href="https://www.riverhousebookscarmel.com/" target="_blank" style="color:var(--coast)">Pilgrim's Way &amp; Secret Garden</a> — Dolores St between 5th &amp; 6th, Carmel. Since 1969, the last dedicated bookshop in Carmel. <a class="map-btn" href="https://maps.google.com/?q=Pilgrims+Way+Bookstore+Carmel+California" target="_blank">📍 Map</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 10 -->
+    <div class="day-card" id="day-card-10">
+      <div class="lock-screen" id="lock-10">
+        <div class="ls-icon">🔒</div>
+        <div class="ls-day-label">Day 10</div>
+        <div class="ls-countdown" id="cd-10"></div>
+      </div>
+      <div class="day-header">
+        <span class="day-number special">Monday 10 August</span>
+        <div class="day-drive">🚶 Walk to the terminal · Zero stress</div>
+      </div>
+      <div class="day-body">
+        <div class="activities">
+          <h4>Today's Plan</h4>
+          <ul class="activity-list">
+            <li><strong>06:00:</strong> Shuttle from Aloft to terminal — you're already there</li>
+            <li>Check in, drop bags, clear security in complete comfort</li>
+            <li>Airside breakfast — SFO International Terminal has genuinely excellent food</li>
+            <li>Duty free: California wines, Anchor Steam hot sauce, See's Candies</li>
+            <li><strong>08:20:</strong> Wheels up over the Bay — goodbye California 🌅</li>
+          </ul>
+          <div class="special-note">🔑 The single most important logistical move of the trip: you returned the hire car at SFO last night. Morning car returns on the day of an early flight are how holidays end in tears.</div>
+        </div>
+        <div>
+          <div class="stay-box">
+            <h4>🙏 Trip Stats</h4>
+            <ul class="activity-list">
+              <li>9 nights · 10 days · 4 people</li>
+              <li>~550 miles of the most beautiful roads on earth</li>
+              <li>SF → Yosemite → Santa Clara → Santa Barbara → PCH → Big Sur → Carmel</li>
+              <li>Memories: genuinely priceless</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end days-grid -->
+</div><!-- end itinerary -->
+
+<!-- CARS SECTION REMOVED -->
+<div style="display:none">
+  <div class="cars-grid">
+    <div class="car-card top-pick">
+      <div class="car-emoji">🤠</div>
+      <div class="top-pick-badge">⭐ Top Pick</div>
+      <h3>Ford Bronco 4-Door</h3>
+      <p>The coolest car in California right now. Removable roof panels, loads of space for 4 + luggage. Looks extraordinary on the PCH.</p>
+      <ul class="car-pros">
+        <li>Removable roof for Hwy 1 moments</li>
+        <li>Space for 4 people + 4 cabin cases</li>
+        <li>Looks the absolute part</li>
+        <li>Handles cliffs and city equally</li>
+      </ul>
+      <div class="car-where">~$115/day via <a href="https://www.turo.com/en-us/search?location=San+Francisco+International+Airport&vehicleType=Truck+%2F+SUV" target="_blank">Turo SFO →</a> · ~$135/day <a href="https://www.hertz.com" target="_blank">Hertz →</a></div>
+    </div>
+    <div class="car-card">
+      <div class="car-emoji">🏎️</div>
+      <h3>Mustang Convertible</h3>
+      <p>The open-top California dream car. Perfect for Big Sur. Boot is only ~11 cu ft though — tight with 4 cabin cases. Consider for Big Sur day only via Turo.</p>
+      <ul class="car-pros">
+        <li>Iconic open-top on PCH</li>
+        <li>Thrilling on coastal roads</li>
+      </ul>
+      <div class="car-where">~$135/day via <a href="https://www.hertz.com" target="_blank">Hertz</a> · <a href="https://www.sixt.com" target="_blank">Sixt</a> · <a href="https://www.turo.com" target="_blank">Turo</a></div>
+    </div>
+    <div class="car-card">
+      <div class="car-emoji">🏔️</div>
+      <h3>Jeep Wrangler 4-Door</h3>
+      <p>Rugged, spacious, open-top option available. Great for Yosemite's terrain and the PCH equally. Good luggage space.</p>
+      <ul class="car-pros">
+        <li>Soft-top or hard-top option</li>
+        <li>Space for 4 + luggage</li>
+        <li>Iconic US road trip vehicle</li>
+      </ul>
+      <div class="car-where">~$135/day via <a href="https://www.hertz.com" target="_blank">Hertz</a> · <a href="https://www.enterprise.com" target="_blank">Enterprise</a></div>
+    </div>
+    <div class="car-card">
+      <div class="car-emoji">🚙</div>
+      <h3>Standard SUV (RAV4 / Highlander)</h3>
+      <p>The sensible call. Comfortable for 4 adults, proper luggage space, easy to drive everywhere. Half the price of the cool options.</p>
+      <ul class="car-pros">
+        <li>Comfortable for long drives</li>
+        <li>Plenty of luggage space</li>
+        <li>~$70/day — saves ~$455 vs cool cars</li>
+        <li>Add a Turo Mustang for Big Sur day only</li>
+      </ul>
+      <div class="car-where">~$70/day via <a href="https://www.kayak.com/cars/SFO" target="_blank">KAYAK SFO →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCES SECTION REMOVED -->
+<div style="display:none">
+  <div class="section-header"></div>
+  <div class="exp-grid">
+    <div class="exp-card green">
+      <span class="exp-icon">🚢</span>
+      <h3>Alcatraz Day Tour ✓ BOOKED</h3>
+      <p>The world's most famous prison on an island in the Bay. Audio tour narrated by former guards and inmates. Board 08:25, ferry 08:40 from Pier 33.</p>
+      <div class="exp-link"><a href="https://www.cityexperiences.com/san-francisco/city-cruises/alcatraz/" target="_blank">cityexperiences.com →</a></div>
+    </div>
+    <div class="exp-card teal">
+      <span class="exp-icon">🤖</span>
+      <h3>Waymo One Driverless Taxi</h3>
+      <p>SF is one of the best places on earth to experience a fully autonomous taxi. Download the Waymo One app before you travel. Try it back from Alcatraz on Day 2 — no driver, no steering wheel input, utterly surreal.</p>
+      <div class="exp-link"><a href="https://waymo.com/waymo-one/" target="_blank">waymo.com →</a></div>
+    </div>
+    <div class="exp-card gold">
+      <span class="exp-icon">🐋</span>
+      <h3>Monterey Whale Watch ✓ BOOKED</h3>
+      <p>14:30 departure from Fisherman's Wharf, Monterey. Back by ~17:30. The Monterey Bay Canyon is one of the richest marine environments on earth — humpbacks, blue whales and dolphins all possible in August.</p>
+      <div class="exp-link"><a href="https://maps.google.com/?q=Fishermans+Wharf+Monterey+whale+watching" target="_blank">📍 Fisherman's Wharf Monterey →</a></div>
+    </div>
+    <div class="exp-card purple">
+      <span class="exp-icon">🎸</span>
+      <h3>AC/DC — Levi's Stadium ✓ BOOKED</h3>
+      <p>5th August. One of the greatest rock bands of all time, live at the 68,000-seat home of the 49ers. Highway to Hell. Back in Black. Thunderstruck.</p>
+      <div class="exp-link"><a href="https://maps.google.com/?q=Levis+Stadium+Santa+Clara" target="_blank">📍 Levi's Stadium →</a></div>
+    </div>
+    <div class="exp-card red">
+      <span class="exp-icon">🦭</span>
+      <h3>Piedras Blancas Elephant Seals</h3>
+      <p>Free roadside pullout north of San Simeon. Hundreds of enormous elephant seals hauled out in August moult. They look prehistoric and ridiculous in equal measure. Allow 30 minutes — you won't want to leave.</p>
+      <div class="exp-link"><a href="https://maps.google.com/?q=Piedras+Blancas+Elephant+Seal+Rookery" target="_blank">📍 Piedras Blancas →</a></div>
+    </div>
+    <div class="exp-card gold">
+      <span class="exp-icon">⛪</span>
+      <h3>Santa Barbara Mission</h3>
+      <p>The Queen of the Missions — founded 1786, the most beautiful of California's 21 Spanish missions. The rose garden, twin bell towers, the fountain. Arrive early and it belongs entirely to you.</p>
+      <div class="exp-link"><a href="https://www.santabarbaramission.org/" target="_blank">santabarbaramission.org →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS SECTION REMOVED -->
+<div style="display:none">
+  <div class="section-header">
+    <h2>🎭 Events &amp; Concerts</h2>
+    <p>Live events happening right on your route, on your exact dates</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="exp-grid">
+    <div class="exp-card teal">
+      <span class="exp-icon">🎭</span>
+      <h3>Free Shakespeare — Antony &amp; Cleopatra ✓ GOING</h3>
+      <p><strong>Sunday 2 August · 6pm · McLaren Park, SF</strong><br>After Alcatraz, after exploring the city, head to McLaren Park for an open-air preview performance. Free, no tickets, no reservations — just turn up.</p>
+      <div class="exp-link"><a href="https://sfshakes.org/performance/free-shakes/ac/" target="_blank">sfshakes.org →</a> &nbsp; <a href="https://maps.google.com/?q=McLaren+Park+San+Francisco" target="_blank">📍 McLaren Park</a></div>
+    </div>
+    <div class="exp-card red">
+      <span class="exp-icon">🏎️</span>
+      <h3>Monterey Car Week — Pre-Reunion</h3>
+      <p><strong>Saturday–Sunday 8–9 August · Laguna Seca</strong><br>You arrive in Monterey on the opening weekend of one of the greatest car events on the planet. Pre-war GP cars, 1950s sports racers and '60s F1 back to life on a legendary circuit.</p>
+      <div class="exp-link"><a href="https://www.seemonterey.com/monterey-car-week-events-by-day/" target="_blank">Full Car Week schedule →</a> &nbsp; <a href="https://maps.google.com/?q=WeatherTech+Raceway+Laguna+Seca" target="_blank">📍 Laguna Seca</a></div>
+    </div>
+    <div class="exp-card purple">
+      <span class="exp-icon">🎸</span>
+      <h3>AC/DC — Levi's Stadium ✓ BOOKED</h3>
+      <p><strong>Wednesday 5 August · Evening</strong><br>One of the greatest rock bands of all time, at one of the biggest venues in the USA. The anchor event of the entire trip.</p>
+      <div class="exp-link"><a href="https://maps.google.com/?q=Levis+Stadium+Santa+Clara+California" target="_blank">📍 Levi's Stadium →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK NOW SECTION REMOVED -->
+<div style="display:none">
+  <div class="section-header">
+    <h2>Book Now</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="booking-grid">
+    <a class="booking-link" href="https://www.turo.com/en-us/search?location=San+Francisco+International+Airport" target="_blank">
+      <div class="bl-icon">🚗</div>
+      <div class="bl-name">Hire Car</div>
+      <div class="bl-note">Collect 3 Aug SFO · Return 9 Aug</div>
+      <div class="bl-urgency">⚠️ Book soon — peak season</div>
+    </a>
+    <a class="booking-link" href="https://www.kayak.com/cars/SFO" target="_blank">
+      <div class="bl-icon">🔍</div>
+      <div class="bl-name">Compare Car Hire</div>
+      <div class="bl-note">KAYAK SFO comparison</div>
+    </a>
+    <a class="booking-link" href="https://www.seemonterey.com/monterey-car-week-events-by-day/" target="_blank">
+      <div class="bl-icon">🏎️</div>
+      <div class="bl-name">Car Week Tickets</div>
+      <div class="bl-note">Laguna Seca · 8–9 Aug</div>
+    </a>
+    <a class="booking-link" href="https://bluewaterkayaking.com/" target="_blank">
+      <div class="bl-icon">🌊</div>
+      <div class="bl-name">Tomales Bay Kayaking</div>
+      <div class="bl-note">Bioluminescent tour · Day 2 evening</div>
+      <div class="bl-urgency">Optional — book flexible/refundable</div>
+    </a>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="tips" style="scroll-margin-top:80px">
+  <div class="section-header">
+    <h2>Top Travel Tips</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <h4>🌫️ August in SF = Fog</h4>
+      <p>San Francisco summers are famously cool and foggy — locals call it "Fogust." Pack a light jacket. The fog burns off most days by midday. Once you leave the city and head south, the coast warms up considerably.</p>
+    </div>
+    <div class="tip-card">
+      <h4>⛽ Fuel Before Big Sur</h4>
+      <p>Fill the tank in Santa Barbara before heading north. There is one petrol station in Big Sur charging roughly double the going rate. Fill up again in Pismo Beach or San Simeon before entering the Big Sur stretch.</p>
+    </div>
+    <div class="tip-card">
+      <h4>📱 Download Offline Maps</h4>
+      <p>Big Sur has almost no mobile signal. Download the offline map for the Hwy 1 Big Sur section the night before in Cambria. You'll need it for finding Pfeiffer Beach's unsigned turn especially.</p>
+    </div>
+    <div class="tip-card">
+      <h4>🎫 America the Beautiful Pass</h4>
+      <p>Your pass ($80/vehicle) covers Yosemite entrance fee and Pfeiffer Beach. It does not cover California State Parks (McWay Falls) or 17-Mile Drive ($12, private). Autocamp booking covers your timed entry — no separate permit needed.</p>
+    </div>
+    <div class="tip-card">
+      <h4>🚗 Return the Car the Night Before</h4>
+      <p>Return the hire car at SFO rental centre on the evening of Day 9. This is the single most stress-reducing thing you can do for an 08:20 departure. The AirTrain from the rental centre to the terminal takes 5 minutes.</p>
+    </div>
+    <div class="tip-card">
+      <h4>💳 Tipping Culture</h4>
+      <p>18–22% at restaurants, $2–5/day hotel housekeeping, 15–20% for Ubers. Budget roughly $50/day extra per couple for tips and incidentals.</p>
+    </div>
+    <div class="tip-card">
+      <h4>🤖 Try a Waymo Driverless Taxi</h4>
+      <p>Download the Waymo One app before you travel. Try it on the ride back from Alcatraz on Day 2 — you'll be talking about it for weeks.</p>
+    </div>
+    <div class="tip-card">
+      <h4>🛣️ Highway 1 Conditions</h4>
+      <p>Check <a href="https://roads.dot.ca.gov/" style="color:var(--coast)">roads.dot.ca.gov</a> before the Day 8 PCH drive. August is usually fine but check the week before — sections occasionally close after winter storms.</p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKSHOPS SECTION REMOVED — content embedded in day cards -->
+<div style="display:none">
+  <div class="section-header">
+    <h2>📚 Local Bookshops</h2>
+    <p>The best independent bookshops along your route</p>
+    <div class="section-divider"></div>
+  </div>
+  <div class="books-grid">
+    <div class="book-card">
+      <div class="book-city">San Francisco — Days 1–3</div>
+      <div class="book-name">City Lights Booksellers</div>
+      <div class="book-addr">261 Columbus Ave, North Beach · Open daily until midnight</div>
+      <p class="book-desc">The most famous bookshop in America. Founded by Beat poet Lawrence Ferlinghetti in 1953 — three floors, legendary basement poetry room. Pair with a Vesuvio cocktail next door.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=City+Lights+Booksellers+261+Columbus+Ave+San+Francisco" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">San Francisco — Days 1–3</div>
+      <div class="book-name">Green Apple Books</div>
+      <div class="book-addr">506 Clement St, Inner Richmond</div>
+      <p class="book-desc">SF institution since 1967. Multiple floors of expertly curated new and used titles alongside vinyl and magazines. One of the best browsing bookshops on the West Coast.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=Green+Apple+Books+506+Clement+St+San+Francisco" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">San Francisco — Days 1–3</div>
+      <div class="book-name">The Booksmith</div>
+      <div class="book-addr">1644 Haight St, Haight-Ashbury</div>
+      <p class="book-desc">Cosy neighbourhood bookshop with excellent literary fiction and narrative nonfiction. Handwritten staff picks throughout. Walk from Golden Gate Park.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=The+Booksmith+1644+Haight+St+San+Francisco" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">Santa Barbara — Day 6</div>
+      <div class="book-name">Chaucer's Books</div>
+      <div class="book-addr">3321 State St, Upper State Street</div>
+      <p class="book-desc">Santa Barbara's beloved indie since 1974. A labyrinth of literary discovery, knowledgeable staff, warm atmosphere. The go-to for locals.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=Chaucers+Books+3321+State+St+Santa+Barbara" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">Santa Barbara — Day 6</div>
+      <div class="book-name">The Book Den</div>
+      <div class="book-addr">11 E Anapamu St, Downtown</div>
+      <p class="book-desc">A Santa Barbara treasure since the 1930s — new, used and out-of-print across art, literature and history. Perfect for a morning browse before the Mission.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=The+Book+Den+11+E+Anapamu+St+Santa+Barbara" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">Cambria — Day 7</div>
+      <div class="book-name">Coalesce Bookstore</div>
+      <div class="book-addr">845 Main St, Cambria East Village</div>
+      <p class="book-desc">Cambria's charming village bookshop on the main street. A good general selection — worth a browse while exploring the village in the evening.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=Coalesce+Bookstore+845+Main+St+Cambria+California" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">Carmel-by-the-Sea — Day 9</div>
+      <div class="book-name">Pilgrim's Way &amp; Secret Garden</div>
+      <div class="book-addr">Dolores St between 5th &amp; 6th, Carmel</div>
+      <p class="book-desc">Since 1969, the last dedicated bookshop in Carmel. Literary fiction to Eastern spirituality. The attached Secret Garden gift shop is delightful. A must-stop on the 17-Mile Drive day.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=Pilgrims+Way+Bookstore+Carmel+by+the+Sea" target="_blank">📍 Navigate</a>
+    </div>
+    <div class="book-card">
+      <div class="book-city">Monterey — Day 8</div>
+      <div class="book-name">Bookworks</div>
+      <div class="book-addr">667 Lighthouse Ave, Pacific Grove</div>
+      <p class="book-desc">A proper neighbourhood bookshop with a coffee shop inside. Order a flat white, settle in and browse before or after the 14:30 whale watch. Excellent California coast section.</p>
+      <a class="map-btn" href="https://maps.google.com/?q=Bookworks+667+Lighthouse+Ave+Pacific+Grove+California" target="_blank">📍 Navigate</a>
+    </div>
+  </div>
+</div>
+
+<!-- KML / MAPS EXPORT -->
+<div style="scroll-margin-top:80px;margin-bottom:80px">
+  <div class="kml-section">
+    <h3>🗺️ Save All Locations to Google Maps</h3>
+    <p>Download a KML file with every hotel, restaurant, bookshop and attraction on this trip pre-pinned. Open Google Maps on your phone → Saved → Lists → Import — and all locations appear as a saved list.</p>
+    <button class="kml-btn" onclick="downloadKML()">⬇️ Download Trip Map (KML)</button>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<div class="footer">
+  <p style="font-size:24px;margin-bottom:16px">🌅</p>
+  <p><span class="highlight">California Road Trip — August 2026</span></p>
+  <p>4 adventurers · 10 days · San Francisco to the American Riviera and back</p>
+  <br>
+  <p style="font-size:12px;opacity:.5">Check current entry requirements, road conditions and opening times before you travel. The world is out there — go get it.</p>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// PWA MANIFEST (injected dynamically)
+// ══════════════════════════════════════
+(function() {
+  const manifest = {
+    name: "California Road Trip 2026",
+    short_name: "CA Trip 2026",
+    description: "10 days · 4 adventurers · The Pacific Coast Highway",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#0D1B2A",
+    theme_color: "#F4A435",
+    orientation: "portrait-primary",
+    icons: [{
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%230D1B2A'/%3E%3Ctext x='80' y='380' font-size='340'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E",
+      sizes: "any",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    }]
+  };
+  try {
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+    document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+  } catch(e) {}
+})();
+
+// ══════════════════════════════════════
+// SERVICE WORKER
+// ══════════════════════════════════════
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  const swCode = `
+    const CACHE = 'ca-trip-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+      e.waitUntil(caches.open(CACHE).then(c => c.add('/')));
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(clients.claim());
+    });
+    self.addEventListener('fetch', e => {
+      if (e.request.method !== 'GET') return;
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          const net = fetch(e.request).then(res => {
+            if (res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+            return res;
+          }).catch(() => cached);
+          return cached || net;
+        })
+      );
+    });
+    self.addEventListener('push', e => {
+      const d = e.data ? e.data.json() : {title:'CA Trip 2026', body:'Update'};
+      e.waitUntil(self.registration.showNotification(d.title, {body: d.body, icon: d.icon || ''}));
+    });
+  `;
+  try {
+    const blob = new Blob([swCode], {type:'application/javascript'});
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════
+// TRIP UNLOCK SCHEDULE
+// PDT = UTC-7. 8pm PDT = 03:00 UTC next day
+// ══════════════════════════════════════
+const UNLOCK = {
+  1:  new Date('2026-08-01T03:00:00Z'), // Jul 31 8pm PDT
+  2:  new Date('2026-08-02T03:00:00Z'), // Aug  1 8pm PDT
+  3:  new Date('2026-08-03T03:00:00Z'), // Aug  2 8pm PDT (Yosemite Day 1)
+  4:  new Date('2026-08-03T03:00:00Z'), // Aug  2 8pm PDT (Yosemite Day 2 — same)
+  5:  new Date('2026-08-05T03:00:00Z'), // Aug  4 8pm PDT
+  6:  new Date('2026-08-06T03:00:00Z'), // Aug  5 8pm PDT
+  7:  new Date('2026-08-07T03:00:00Z'), // Aug  6 8pm PDT
+  8:  new Date('2026-08-08T03:00:00Z'), // Aug  7 8pm PDT
+  9:  new Date('2026-08-09T03:00:00Z'), // Aug  8 8pm PDT
+  10: new Date('2026-08-10T03:00:00Z'), // Aug  9 8pm PDT
+};
+
+const DAY_NAMES = {
+  1: 'Day 1 — Touchdown, San Francisco',
+  2: 'Day 2 — The Icons, San Francisco',
+  3: 'Days 3 & 4 — Yosemite',
+  4: 'Days 3 & 4 — Yosemite',
+  5: 'Day 5 — Santa Clara & AC/DC',
+  6: 'Day 6 — Santa Barbara',
+  7: 'Day 7 — PCH to Cambria',
+  8: 'Day 8 — Big Sur & Monterey',
+  9: 'Day 9 — Carmel & 17-Mile Drive',
+  10: 'Day 10 — Fly Home'
+};
+
+// Route circle emojis (hidden until unlocked)
+const ROUTE_EMOJIS = { 1:'✈️', 2:'🌉', 3:'🏔️', 5:'🎸', 6:'🌴', 7:'🌊', 8:'🏄', 9:'🦦', 10:'✈️' };
+
+// ══════════════════════════════════════
+// TIMED EVENTS — 2-hour warnings
+// All times in UTC (PDT + 7hrs)
+// ══════════════════════════════════════
+const EVENTS = [
+  { id:'alcatraz',    day:2,  name:'🚢 Board Alcatraz ferry',       detail:'Board at 08:25, ferry departs 08:40 from Pier 33',        eventUTC: new Date('2026-08-02T15:25:00Z'), warnUTC: new Date('2026-08-02T13:25:00Z') },
+  { id:'shakespeare', day:2,  name:'🎭 Antony & Cleopatra',         detail:'Free Shakespeare in the Park, McLaren Park, 6pm',          eventUTC: new Date('2026-08-03T01:00:00Z'), warnUTC: new Date('2026-08-02T23:00:00Z') },
+  { id:'acdc',        day:5,  name:'🎸 AC/DC at Levi\'s Stadium',   detail:'Showtime ~8pm — pre-gig beers on Santana Row, then Uber', eventUTC: new Date('2026-08-06T03:00:00Z'), warnUTC: new Date('2026-08-06T01:00:00Z') },
+  { id:'whalewatch',  day:8,  name:'🐋 Whale Watch departs',        detail:'14:30 from Fisherman\'s Wharf, Monterey — be early',      eventUTC: new Date('2026-08-08T21:30:00Z'), warnUTC: new Date('2026-08-08T19:30:00Z') },
+  { id:'checkin',     day:10, name:'✈️ Check in at SFO',            detail:'Flight 08:20 — check-in by 06:00 at the latest',          eventUTC: new Date('2026-08-10T13:00:00Z'), warnUTC: new Date('2026-08-10T11:00:00Z') },
+];
+
+// ══════════════════════════════════════
+// DAY REVEAL LOGIC
+// ══════════════════════════════════════
+function isDayUnlocked(day) {
+  return new Date() >= UNLOCK[day];
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return 'Revealing now…';
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  if (h > 48) {
+    const d = Math.floor(h / 24);
+    return `Reveals in ${d} day${d>1?'s':''}`;
+  }
+  if (h >= 1) return `Reveals in ${h}h ${m}m`;
+  return `Reveals in ${m} minute${m!==1?'s':''}`;
+}
+
+function applyReveal() {
+  for (let day = 1; day <= 10; day++) {
+    const card = document.getElementById(`day-card-${day}`);
+    const lock = document.getElementById(`lock-${day}`);
+    const cd   = document.getElementById(`cd-${day}`);
+    const rdot = document.getElementById(`rdot-${day}`);
+    const rlbl = document.getElementById(`rlbl-${day}`);
+    if (!card) continue;
+
+    if (isDayUnlocked(day)) {
+      card.classList.add('unlocked');
+      if (rdot) rdot.classList.remove('locked-dot');
+      if (rlbl) rlbl.classList.remove('hidden');
+    } else {
+      card.classList.remove('unlocked');
+      if (rdot) { rdot.classList.add('locked-dot'); rdot.textContent = '🔒'; }
+      if (rlbl) rlbl.classList.add('hidden');
+      // Update countdown
+      if (cd) {
+        const ms = UNLOCK[day] - new Date();
+        cd.textContent = formatCountdown(ms);
+      }
+    }
+  }
+}
+
+// Update countdowns every minute
+setInterval(applyReveal, 60000);
+applyReveal();
+
+// ══════════════════════════════════════
+// NOTIFICATION SYSTEM
+// ══════════════════════════════════════
+let notifScheduled = false;
+
+function showNotifBanner() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    scheduleNotifications();
+    return;
+  }
+  if (Notification.permission !== 'denied') {
+    document.getElementById('notif-banner').style.display = 'flex';
+  }
+}
+
+async function requestNotifications() {
+  const perm = await Notification.requestPermission();
+  document.getElementById('notif-banner').style.display = 'none';
+  if (perm === 'granted') {
+    scheduleNotifications();
+    showToast('🔔 Alerts enabled! You\'ll be notified when each day unlocks and before booked events.');
+  }
+}
+
+function scheduleNotifications() {
+  if (notifScheduled) return;
+  notifScheduled = true;
+  const now = new Date();
+
+  // Day unlock notifications
+  Object.entries(UNLOCK).forEach(([day, unlockTime]) => {
+    const ms = unlockTime - now;
+    if (ms > 0 && ms < 86400000 * 14) { // within 14 days
+      setTimeout(() => {
+        try {
+          new Notification(`🌅 ${DAY_NAMES[day]} is now revealed!`, {
+            body: 'Tap to open your itinerary.',
+            tag: `unlock-day-${day}`,
+            icon: ''
+          });
+          applyReveal();
+        } catch(e) {}
+      }, ms);
+    }
+  });
+
+  // 2-hour event warnings
+  EVENTS.forEach(ev => {
+    const msWarn = ev.warnUTC - now;
+    if (msWarn > 0 && msWarn < 86400000 * 14) {
+      setTimeout(() => {
+        try {
+          new Notification(`⏰ 2 Hours: ${ev.name}`, {
+            body: ev.detail,
+            tag: `warn-${ev.id}`,
+            icon: ''
+          });
+        } catch(e) {}
+      }, msWarn);
+    }
+    // Also fire at event time
+    const msEvent = ev.eventUTC - now;
+    if (msEvent > 0 && msEvent < 86400000 * 14) {
+      setTimeout(() => {
+        try {
+          new Notification(`🚨 Now: ${ev.name}`, {
+            body: ev.detail,
+            tag: `event-${ev.id}`,
+            icon: ''
+          });
+        } catch(e) {}
+      }, msEvent);
+    }
+  });
+}
+
+// ══════════════════════════════════════
+// HARD REFRESH
+// ══════════════════════════════════════
+function hardRefresh() {
+  const btn = document.querySelector('.refresh-pill');
+  btn.classList.add('spinning');
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => reg.update());
+    });
+  }
+  // Clear caches then reload
+  if ('caches' in window) {
+    caches.keys().then(keys => {
+      Promise.all(keys.map(k => caches.delete(k))).then(() => {
+        window.location.reload(true);
+      });
+    });
+  } else {
+    setTimeout(() => window.location.reload(true), 400);
+  }
+}
+
+// ══════════════════════════════════════
+// TOAST HELPER
+// ══════════════════════════════════════
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(26,58,92,.95);border:1px solid rgba(255,255,255,.15);color:white;padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;max-width:320px;text-align:center;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.4);';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(() => t.remove(), 400); }, 4000);
+}
+
+// ══════════════════════════════════════
+// KML DOWNLOAD
+// ══════════════════════════════════════
+function downloadKML() {
+  const places = [
+    { name:'The San Francisco Proper Hotel', lat:37.7786, lng:-122.4128, desc:'Days 1–2 · Ref: 77349SG160507' },
+    { name:'Alcatraz Ferry — Pier 33', lat:37.8083, lng:-122.4156, desc:'Day 2 · Board 08:25' },
+    { name:'McLaren Park — Shakespeare', lat:37.7206, lng:-122.4292, desc:'Day 2 · Free Shakespeare 6pm' },
+    { name:'Autocamp Yosemite', lat:37.6609, lng:-119.8017, desc:'Days 3–4 · ID: 36044SG131230' },
+    { name:'Tunnel View, Yosemite', lat:37.7189, lng:-119.6792, desc:'Day 3 · Must-stop viewpoint' },
+    { name:'Yosemite Falls', lat:37.7562, lng:-119.5964, desc:'Day 4 · Tallest waterfall in N. America' },
+    { name:'Hotel Valencia Santana Row', lat:37.3209, lng:-121.9503, desc:'Day 5 · Conf: 5458762464' },
+    { name:"Levi's Stadium", lat:37.4033, lng:-121.9694, desc:'Day 5 · AC/DC' },
+    { name:'Hilton Santa Barbara Beachfront Resort', lat:34.4144, lng:-119.6728, desc:'Day 6 · Hilton points' },
+    { name:'Santa Barbara Mission', lat:34.4405, lng:-119.7138, desc:'Day 6' },
+    { name:'The Funk Zone, Santa Barbara', lat:34.4145, lng:-119.6856, desc:'Day 6 · Dining & wine' },
+    { name:'Moonstone Landing, Cambria', lat:35.5696, lng:-121.1037, desc:'Day 7 · Conf: 5421270918 · Breakfast incl.' },
+    { name:'Piedras Blancas Elephant Seals', lat:35.6645, lng:-121.2558, desc:'Day 7 · Free, unmissable' },
+    { name:'Pismo Beach Pier', lat:35.1428, lng:-120.6428, desc:'Day 7 · Lunch stop' },
+    { name:'Bixby Creek Bridge', lat:36.3739, lng:-121.9018, desc:'Day 8 · Most photographed bridge in CA' },
+    { name:'Pfeiffer Beach, Big Sur', lat:36.2403, lng:-121.8175, desc:'Day 8 · Purple sand, Keyhole Arch' },
+    { name:'McWay Falls', lat:36.1577, lng:-121.6716, desc:'Day 8 · Waterfall onto turquoise cove' },
+    { name:"Fisherman's Wharf, Monterey", lat:36.6056, lng:-121.8939, desc:'Day 8 · Whale Watch departs 14:30' },
+    { name:'Casa Munras Garden Hotel, Monterey', lat:36.6005, lng:-121.8997, desc:'Day 8 · Conf: 6894532419' },
+    { name:'WeatherTech Raceway Laguna Seca', lat:36.5841, lng:-121.7541, desc:'Days 8–9 · Car Week Pre-Reunion' },
+    { name:'Carmel-by-the-Sea — Ocean Avenue', lat:36.5552, lng:-121.9233, desc:'Day 9 · Village walk' },
+    { name:"Pilgrim's Way Bookstore, Carmel", lat:36.5562, lng:-121.9224, desc:'Day 9 · Best bookshop in Carmel' },
+    { name:'17-Mile Drive Entrance', lat:36.5855, lng:-121.9614, desc:'Day 9 · $12 entry' },
+    { name:'Aloft San Francisco Airport', lat:37.5963, lng:-122.3847, desc:'Day 9 · Conf: 6751586359' },
+    { name:'City Lights Booksellers, SF', lat:37.7977, lng:-122.4063, desc:'SF · 261 Columbus Ave · Open midnight' },
+    { name:'Green Apple Books, SF', lat:37.7796, lng:-122.4621, desc:'SF · 506 Clement St' },
+    { name:"Chaucer's Books, Santa Barbara", lat:34.4447, lng:-119.7256, desc:'SB · 3321 State St' },
+    { name:'Coalesce Bookstore, Cambria', lat:35.5643, lng:-121.0772, desc:'Cambria · 845 Main St' },
+  ];
+
+  const placemarks = places.map(p => `
+  <Placemark>
+    <name>${p.name.replace(/&/g,'&amp;')}</name>
+    <description>${p.desc.replace(/&/g,'&amp;')}</description>
+    <Point><coordinates>${p.lng},${p.lat},0</coordinates></Point>
+  </Placemark>`).join('');
+
+  const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<name>California Road Trip 2026</name>
+<description>All locations for Antony Hagues family road trip, August 2026</description>
+${placemarks}
+</Document>
+</kml>`;
+
+  const blob = new Blob([kml], {type:'application/vnd.google-earth.kml+xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'california_trip_2026.kml';
+  a.click();
+  showToast('📍 KML downloaded! Open Google Maps → Saved → Lists → Import to add all locations.');
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  applyReveal();
+  showNotifBanner();
+  // Show install prompt note if not standalone
+  if (!window.matchMedia('(display-mode: standalone)').matches && !navigator.standalone) {
+    // Only show tip if on mobile
+    if (/iPhone|iPad|Android/.test(navigator.userAgent)) {
+      showToast('📲 Add to Home Screen for the full app experience');
+    }
+  }
+});
+</script>
+</body>
+</html>
