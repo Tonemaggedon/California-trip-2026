@@ -31,19 +31,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:100vh;}
 
-/* ── REFRESH PILL ── */
-.refresh-pill{
-  position:fixed;top:max(env(safe-area-inset-top,0px) + 12px,12px);right:12px;z-index:999;
-  background:rgba(244,164,53,.92);backdrop-filter:blur(10px);border:none;border-radius:20px;
-  padding:8px 14px;color:#1A1A00;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 4px 16px rgba(0,0,0,.4);
-  transition:transform .15s,background .15s;letter-spacing:.3px;
-}
-.refresh-pill:hover{transform:scale(1.05);}
-.refresh-pill:active{transform:scale(.96);}
-.refresh-pill.spinning .ri{animation:spin .7s linear infinite;}
-.ri{display:inline-block;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── HERO ── */
 .hero{background:linear-gradient(135deg,#0D1B2A 0%,#1A3A5C 40%,#2D6EA8 70%,#F4A435 100%);padding:80px 40px 60px;text-align:center;position:relative;overflow:hidden;}
@@ -198,11 +185,6 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
 </style>
 </head>
 <body>
-
-<!-- Floating Refresh Button -->
-<button class="refresh-pill" onclick="hardRefresh()" title="Force refresh">
-  <span class="ri">↻</span> Refresh
-</button>
 
 <!-- Notification Permission Banner -->
 <div id="notif-banner" class="notif-banner">
@@ -600,7 +582,7 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
         <div class="ls-countdown" id="cd-8"></div>
       </div>
       <div class="day-header">
-        <span class="day-number">Saturday 8 August 🏎️ Car Week</span>
+        <span class="day-number">Saturday 8 August</span>
         <div class="day-drive">🚗 ~2.5 hrs · Most spectacular road on earth · Whale Watch 14:30</div>
       </div>
       <div class="day-body">
@@ -614,7 +596,6 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
             <li><strong>🐋 Whale Watch 14:30 ✓ BOOKED</strong> — departs Fisherman's Wharf Monterey, back by ~17:30. Humpbacks, blue whales and dolphins all possible. <a class="map-btn" href="https://maps.google.com/?q=Fishermans+Wharf+Monterey+California+whale+watching" target="_blank">📍 Monterey Wharf</a></li>
             <li><strong>Evening:</strong> Stroll Cannery Row, dinner on the waterfront, collapse at Casa Munras. <a class="map-btn" href="https://maps.google.com/?q=Cannery+Row+Monterey+California" target="_blank">📍 Cannery Row</a></li>
           </ul>
-          <div class="special-note" style="border-left-color:#F4A435;background:linear-gradient(90deg,rgba(244,164,53,.2),rgba(244,164,53,.05))">🏎️ <strong>Monterey Car Week Aug 7–16:</strong> You arrive on the opening weekend. The Pre-Reunion at Laguna Seca (Aug 8–9) brings pre-war GP cars, 1950s sports racers and '60s F1 back to life on a legendary circuit. <a href="https://www.seemonterey.com/monterey-car-week-events-by-day/" target="_blank" style="color:var(--coast)">Full Car Week schedule →</a> <a class="map-btn" href="https://maps.google.com/?q=WeatherTech+Raceway+Laguna+Seca+Salinas+California" target="_blank">📍 Laguna Seca</a></div>
           <div class="stay-box" style="margin-top:12px">
             <h4>🍽️ Eat Tonight — Cannery Row</h4>
             <div class="hotel-desc" style="margin-top:6px">
@@ -1298,7 +1279,6 @@ function downloadKML() {
     { name:'McWay Falls', lat:36.1577, lng:-121.6716, desc:'Day 8 · Waterfall onto turquoise cove' },
     { name:"Fisherman's Wharf, Monterey", lat:36.6056, lng:-121.8939, desc:'Day 8 · Whale Watch departs 14:30' },
     { name:'Casa Munras Garden Hotel, Monterey', lat:36.6005, lng:-121.8997, desc:'Day 8 · Conf: 6894532419' },
-    { name:'WeatherTech Raceway Laguna Seca', lat:36.5841, lng:-121.7541, desc:'Days 8–9 · Car Week Pre-Reunion' },
     { name:'Carmel-by-the-Sea — Ocean Avenue', lat:36.5552, lng:-121.9233, desc:'Day 9 · Village walk' },
     { name:"Pilgrim's Way Bookstore, Carmel", lat:36.5562, lng:-121.9224, desc:'Day 9 · Best bookshop in Carmel' },
     { name:'17-Mile Drive Entrance', lat:36.5855, lng:-121.9614, desc:'Day 9 · $12 entry' },
