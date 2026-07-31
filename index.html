@@ -1055,16 +1055,16 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 // PDT = UTC-7. 8pm PDT = 03:00 UTC next day
 // ══════════════════════════════════════
 const UNLOCK = {
-  1:  new Date('2026-08-01T03:00:00Z'), // Jul 31 8pm PDT
-  2:  new Date('2026-08-02T03:00:00Z'), // Aug  1 8pm PDT
-  3:  new Date('2026-08-03T03:00:00Z'), // Aug  2 8pm PDT (Yosemite Day 1)
-  4:  new Date('2026-08-03T03:00:00Z'), // Aug  2 8pm PDT (Yosemite Day 2 — same)
-  5:  new Date('2026-08-05T03:00:00Z'), // Aug  4 8pm PDT
-  6:  new Date('2026-08-06T03:00:00Z'), // Aug  5 8pm PDT
-  7:  new Date('2026-08-07T03:00:00Z'), // Aug  6 8pm PDT
-  8:  new Date('2026-08-08T03:00:00Z'), // Aug  7 8pm PDT
-  9:  new Date('2026-08-09T03:00:00Z'), // Aug  8 8pm PDT
-  10: new Date('2026-08-10T03:00:00Z'), // Aug  9 8pm PDT
+  1:  new Date('2026-08-01T01:00:00Z'), // Jul 31 6pm PDT (9pm EDT)
+  2:  new Date('2026-08-02T01:00:00Z'), // Aug  1 6pm PDT (9pm EDT)
+  3:  new Date('2026-08-03T01:00:00Z'), // Aug  2 6pm PDT (Yosemite Day 1)
+  4:  new Date('2026-08-03T01:00:00Z'), // Aug  2 6pm PDT (Yosemite Day 2 — same)
+  5:  new Date('2026-08-05T01:00:00Z'), // Aug  4 6pm PDT (9pm EDT)
+  6:  new Date('2026-08-06T01:00:00Z'), // Aug  5 6pm PDT (9pm EDT)
+  7:  new Date('2026-08-07T01:00:00Z'), // Aug  6 6pm PDT (9pm EDT)
+  8:  new Date('2026-08-08T01:00:00Z'), // Aug  7 6pm PDT (9pm EDT)
+  9:  new Date('2026-08-09T01:00:00Z'), // Aug  8 6pm PDT (9pm EDT)
+  10: new Date('2026-08-10T01:00:00Z'), // Aug  9 6pm PDT (9pm EDT)
 };
 
 const DAY_NAMES = {
