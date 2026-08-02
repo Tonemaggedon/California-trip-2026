@@ -340,7 +340,7 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
           <div class="stay-box">
             <h4>🏨 Stay — San Francisco (night 2) ✓ BOOKED</h4>
             <div class="hotel-name"><a href="https://www.properhotel.com/hotels/san-francisco/" target="_blank">The San Francisco Proper</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
-            <div class="hotel-desc">Final night at the Proper. Pack bags tonight — tomorrow: Yosemite.<br><strong style="color:var(--coast)">Ref: 77349SG160507</strong></div>
+            <div class="hotel-desc">Final night at the Proper.<br><strong style="color:var(--coast)">Ref: 77349SG160507</strong></div>
             <a class="map-btn" href="https://maps.google.com/?q=45+McAllister+St+San+Francisco+Proper+Hotel" target="_blank">📍 Navigate to hotel</a>
           </div>
           <div class="stay-box" style="margin-top:12px">
@@ -443,7 +443,7 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
           <div class="stay-box">
             <h4>🏕️ Stay — Yosemite (Night 2) ✓ BOOKED</h4>
             <div class="hotel-name"><a href="https://autocamp.com/locations/yosemite/" target="_blank">Autocamp Yosemite</a> <span class="hotel-tag tag-booked">✓ BOOKED</span></div>
-            <div class="hotel-desc">Second and final night. Tonight, after a full day in the valley, the fire pit hits different.<br><strong style="color:var(--coast)">ID: 36044SG131230</strong><br>Pack bags tonight — tomorrow: early start to Santa Clara.</div>
+            <div class="hotel-desc">Second and final night. Tonight, after a full day in the valley, the fire pit hits different.<br><strong style="color:var(--coast)">ID: 36044SG131230</strong></div>
             <a class="map-btn" href="https://maps.google.com/?q=Autocamp+Yosemite+California" target="_blank">📍 Navigate to Autocamp</a>
           </div>
         </div>
@@ -644,7 +644,7 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
             <li><strong>Afternoon:</strong> Drive to SFO (~2 hrs). <strong>Return Jeep Wrangler to Hertz by 17:00</strong> · Conf: <strong style="color:var(--coast)">L6012833929</strong> — the rental centre is right at the airport. <a class="map-btn" href="https://maps.google.com/?q=Hertz+San+Francisco+International+Airport+Rental+Car+Center" target="_blank">📍 Hertz SFO</a></li>
             <li>AirTrain to Aloft. Check in. Early dinner. Pack. Early night.</li>
           </ul>
-          <div class="special-note">⏰ 08:20 flight = at check-in by 06:00. Return the car tonight. Tomorrow morning is effortless.</div>
+          <div class="special-note">🚗 Return the Jeep to Hertz tonight — rental centre is right at the terminal. Early night. You've earned it.</div>
         </div>
         <div>
           <div class="stay-box">
@@ -1052,19 +1052,19 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 
 // ══════════════════════════════════════
 // TRIP UNLOCK SCHEDULE
-// PDT = UTC-7. 8pm PDT = 03:00 UTC next day
+// PDT = UTC-7. 4pm PDT = 23:00 UTC same calendar day
 // ══════════════════════════════════════
 const UNLOCK = {
-  1:  new Date('2026-08-01T01:00:00Z'), // Jul 31 6pm PDT (9pm EDT)
-  2:  new Date('2026-08-02T01:00:00Z'), // Aug  1 6pm PDT (9pm EDT)
-  3:  new Date('2026-08-03T01:00:00Z'), // Aug  2 6pm PDT (Yosemite Day 1)
-  4:  new Date('2026-08-03T01:00:00Z'), // Aug  2 6pm PDT (Yosemite Day 2 — same)
-  5:  new Date('2026-08-05T01:00:00Z'), // Aug  4 6pm PDT (9pm EDT)
-  6:  new Date('2026-08-06T01:00:00Z'), // Aug  5 6pm PDT (9pm EDT)
-  7:  new Date('2026-08-07T01:00:00Z'), // Aug  6 6pm PDT (9pm EDT)
-  8:  new Date('2026-08-08T01:00:00Z'), // Aug  7 6pm PDT (9pm EDT)
-  9:  new Date('2026-08-09T01:00:00Z'), // Aug  8 6pm PDT (9pm EDT)
-  10: new Date('2026-08-10T01:00:00Z'), // Aug  9 6pm PDT (9pm EDT)
+  1:  new Date('2026-07-31T23:00:00Z'), // Jul 31 4pm PDT (7pm EDT)
+  2:  new Date('2026-08-01T23:00:00Z'), // Aug  1 4pm PDT (7pm EDT)
+  3:  new Date('2026-08-02T23:00:00Z'), // Aug  2 4pm PDT (Yosemite Day 1)
+  4:  new Date('2026-08-02T23:00:00Z'), // Aug  2 4pm PDT (Yosemite Day 2 — same)
+  5:  new Date('2026-08-04T23:00:00Z'), // Aug  4 4pm PDT (7pm EDT)
+  6:  new Date('2026-08-05T23:00:00Z'), // Aug  5 4pm PDT (7pm EDT)
+  7:  new Date('2026-08-06T23:00:00Z'), // Aug  6 4pm PDT (7pm EDT)
+  8:  new Date('2026-08-07T23:00:00Z'), // Aug  7 4pm PDT (7pm EDT)
+  9:  new Date('2026-08-08T23:00:00Z'), // Aug  8 4pm PDT (7pm EDT)
+  10: new Date('2026-08-09T23:00:00Z'), // Aug  9 4pm PDT (7pm EDT)
 };
 
 const DAY_NAMES = {
