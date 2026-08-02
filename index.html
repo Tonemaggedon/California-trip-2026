@@ -99,8 +99,8 @@ body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:
 /* ── ACTIVITIES ── */
 .activities h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--coast);margin-bottom:12px;}
 .activity-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.activity-list li{display:flex;gap:10px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.5;}
-.activity-list li::before{content:'→';color:var(--sun);flex-shrink:0;margin-top:1px;}
+.activity-list li{position:relative;padding-left:20px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.5;}
+.activity-list li::before{content:'→';color:var(--sun);position:absolute;left:0;top:2px;}
 .activity-list li a{color:var(--mist);text-decoration:none;border-bottom:1px dotted rgba(168,196,212,.4);}
 .activity-list li a:hover{color:var(--coast);}
 
